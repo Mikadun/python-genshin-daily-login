@@ -12,7 +12,8 @@ def genshin_daily_login():
     PATH_TO_DRIVER = './chromedriver.exe'
     PATH_TO_COOKIES = './cookies.pkl'
     options = Options()
-    options.headless = True
+    if os.path.isfile(PATH_TO_COOKIES):
+        options.headless = True
     options.add_argument('--log-level=3')
 
     service = Service(PATH_TO_DRIVER)

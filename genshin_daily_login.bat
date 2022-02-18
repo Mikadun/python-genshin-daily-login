@@ -1,0 +1,1 @@
+python ./genshin_daily_login.py

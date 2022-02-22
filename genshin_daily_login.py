@@ -1,5 +1,6 @@
 import os
 import pickle
+import time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
@@ -12,9 +13,11 @@ def genshin_daily_login():
     PATH_TO_DRIVER = './chromedriver.exe'
     PATH_TO_COOKIES = './cookies.pkl'
     options = Options()
+    options.add_argument('--log-level=3')
+
+    # Show chrome if user need to manually log it
     if os.path.isfile(PATH_TO_COOKIES):
         options.headless = True
-    options.add_argument('--log-level=3')
 
     service = Service(PATH_TO_DRIVER)
     driver = webdriver.Chrome(service=service, options=options)
@@ -37,11 +40,14 @@ def genshin_daily_login():
     # reload page with cookies
     driver.get(url)
 
+    # wait for page to be fully loaded
+    time.sleep(3)
+
     # try to get active element and click on it to collect rewards
     # if none active elements found then rewards already gathered
     try:
         reward = driver.find_element(By.CSS_SELECTOR, "div[class*='---active---']")
-        # reward.click()
+        reward.click()
         print('Claimed reward')
     except NoSuchElementException:
         print('No reward to claim')
@@ -49,7 +55,10 @@ def genshin_daily_login():
     # save cookies
     pickle.dump(driver.get_cookies() , open(PATH_TO_COOKIES, 'wb'))
 
+    time.sleep(1)
+
     driver.close()
+
 
 if __name__ == '__main__':
     genshin_daily_login()

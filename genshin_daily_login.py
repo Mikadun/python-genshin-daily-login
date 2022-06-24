@@ -5,7 +5,8 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, SessionNotCreatedException
+from webdriver_auto_update import check_driver
 
 def genshin_daily_login():
 
@@ -20,7 +21,15 @@ def genshin_daily_login():
         options.headless = True
 
     service = Service(PATH_TO_DRIVER)
-    driver = webdriver.Chrome(service=service, options=options)
+
+    
+
+    try:
+        driver = webdriver.Chrome(service=service, options=options)
+    except:
+        check_driver('./')
+        driver = webdriver.Chrome(service=service, options=options)
+
 
     # preload page to evade cookies domain error
     url = 'https://webstatic-sea.mihoyo.com/ys/event/signin-sea/index.html?act_id=e202102251931481&lang=en-us'
@@ -58,7 +67,6 @@ def genshin_daily_login():
     time.sleep(1)
 
     driver.close()
-
 
 if __name__ == '__main__':
     genshin_daily_login()

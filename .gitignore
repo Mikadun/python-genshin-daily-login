@@ -1,3 +1,6 @@
+# chrome driver
+chromedriver.exe
+
 # cookie files
 *.pkl
 

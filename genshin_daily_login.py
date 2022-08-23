@@ -5,10 +5,10 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException, SessionNotCreatedException
+from selenium.common.exceptions import NoSuchElementException, SessionNotCreatedException, InvalidCookieDomainException
 from webdriver_auto_update import check_driver
 
-def genshin_daily_login():
+def genshin_daily_login(headless = True, force_login = False):
 
     # Setup chrome driver parameters
     PATH_TO_DRIVER = './chromedriver.exe'
@@ -17,12 +17,9 @@ def genshin_daily_login():
     options.add_argument('--log-level=3')
 
     # Show chrome if user need to manually log it
-    if os.path.isfile(PATH_TO_COOKIES):
-        options.headless = True
+    options.headless = headless
 
     service = Service(PATH_TO_DRIVER)
-
-    
 
     try:
         driver = webdriver.Chrome(service=service, options=options)
@@ -37,7 +34,7 @@ def genshin_daily_login():
 
     # check if cookies exists
     # if not then let user log in and save cookies
-    if not os.path.isfile(PATH_TO_COOKIES):
+    if not os.path.isfile(PATH_TO_COOKIES) or force_login:
         input('Log in and then press enter')
         pickle.dump(driver.get_cookies() , open(PATH_TO_COOKIES, 'wb'))
 
@@ -69,4 +66,7 @@ def genshin_daily_login():
     driver.close()
 
 if __name__ == '__main__':
-    genshin_daily_login()
+    try:
+        genshin_daily_login()
+    except InvalidCookieDomainException:
+        genshin_daily_login(headless = False, force_login = True)

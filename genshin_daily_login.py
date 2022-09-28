@@ -57,7 +57,7 @@ def genshin_daily_login(headless=True, force_login=False):
     # try to get active element and click on it to collect rewards
     # if none active elements found then rewards already gathered
     try:
-        reward = driver.find_element(By.CSS_SELECTOR, "div[class*='---active---']")
+        reward = driver.find_element(By.CSS_SELECTOR, "div[class*='---active']")
 
         driver.execute_script("arguments[0].click();", reward)
 
